@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=`, initial-scale=1.0">
+  <link rel="stylesheet" href="public/css/style.css">
+  <title>Login</title>
+</head>
+<body>
+
+  <div class="content">
+    <form class="login" id="regform">
+      <label for="email">Email</label>
+      <input type="text" name="email"> <br>
+      <label for="password">Password</label>
+      <input type="password" name="password"> <br>
+      <button class="submit">Submit</button>
+    </form>
+
+    <div>
+      <h1 class="loading" style="text-align: center; visibility: hidden;background-color: grey;">Loading...</h1>
+    </div>
+  </div>
+
+    <script>
+        regform.onsubmit = async(e) =>
+        {
+            e.preventDefault()
+            var form_data = new FormData(regform)
+            var object = {};
+            form_data.forEach((value, key) => {object[key] = value});
+            var json = JSON.stringify(object);
+
+            let promise = await fetch('http://localhost:8080/user/login',
+            {
+                method: 'POST',
+                body: json
+            })
+
+            let result = await promise.text()
+            // console.log(result)
+            switch(promise.status)
+            {
+                case 200:
+                    window.location.pathname = "/dash"
+                    break
+
+                case 401:
+                    alert("Your account is unactive!!!")
+                    break
+            }
+        }
+    </script>
+</body>
+</html>

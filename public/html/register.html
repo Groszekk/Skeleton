@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="public/css/style.css">
+    <title>Register</title>
+</head>
+<body>
+
+    <div class="content">
+
+        <div id="popup" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">You are registered</p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <h1 class="title">Welcome to my platform</h1>
+                <h1 class="has-text-centered"><img src="https://cdn2.scratch.mit.edu/get_image/user/3038427_60x60.png?v=1391188854.0"></h1>
+            </section>
+            <footer class="box has-text-centered fixed">
+                <button onclick="Redirect()" class="button is-success">I get it</button>
+            </footer>
+            </div>
+        </div>
+
+        <form id="regform">
+            <label for="email">Email</label>
+            <input type="text" name="email"> <br>
+            <label for="nick">Nick</label>
+            <input type="text" name="nick"> <br>
+            <label for="password">Password</label>
+            <input type="password" name="password"> <br>
+            <label for="repassword">RePassword</label>
+            <input type="password" name="repassword"> <br>
+            <button class="submit">Submit</button>
+        </form>
+
+        <div>
+            <h1 class="loading" style="text-align: center; visibility: hidden; background-color: grey;">Loading...</h1>
+        </div>
+    </div>
+
+    <style>
+        .fixed
+        {
+            border-radius: 0 0 6px 6px;
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-top-color: rgb(219, 219, 219);
+        }
+    </style>
+
+    <script>
+        const popup = document.querySelector('#popup')
+        regform.onsubmit = async(e) =>
+        {
+            //ShowLoading('Loading...')
+            e.preventDefault()
+            var form_data = new FormData(regform)
+            var object = {};
+            form_data.forEach((value, key) => {object[key] = value});
+            var json = JSON.stringify(object);
+
+            let promise = await fetch('http://localhost:8080/user/register',
+            {
+                method: 'POST',
+                body: json
+            })
+
+            let result = await promise.text()
+            Show(popup, true)
+            //ShowLoading(result)
+        }
+
+        function ShowLoading(text)
+        {
+            const loading = document.querySelector('.loading')
+            loading.textContent = text
+            loading.style.visibility = 'initial'
+        }
+
+        function Show(element, active)
+        {
+            if(active) element.className += ' is-active';
+        }
+
+        function Redirect()
+        {
+            window.location = "http://localhost:8080/login"
+        }
+    </script>
+</body>
+</html>
